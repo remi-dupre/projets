@@ -2,6 +2,7 @@
 #include <string>
 
 #include "naif.h"
+#include "input.h"
 
 using namespace std;
 
@@ -24,4 +25,8 @@ int main() {
 
 	Prop *psi = (new Or(vector<Prop*>({Non(Var(&a)), Var(&a)})));
 	cout << SAT(psi) << endl;
+
+	Prop *gamma = read_dimacs();
+	cout << gamma->to_string() << endl;
+	cout << SAT(gamma) << endl;
 }

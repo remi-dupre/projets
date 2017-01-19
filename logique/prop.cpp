@@ -62,7 +62,9 @@ vector<freevar*> Neg::get_vars() const {
 
 And::And(Prop *e1, Prop *e2) : m_expr(vector<Prop*>({e1, e2})) {}
 
-And::And(const vector<Prop*> &expr) : m_expr(expr) {}
+And::And(const vector<Prop*> &expr) : m_expr(expr) {
+	m_expr.shrink_to_fit();
+}
 
 string And::to_string() const {
 	string ret("(");
@@ -103,7 +105,9 @@ vector<freevar*> And::get_vars() const {
 
 Or::Or(Prop *e1, Prop *e2) : m_expr(vector<Prop*>({e1, e2})) {}
 
-Or::Or(const vector<Prop*> &expr) : m_expr(expr) {}
+Or::Or(const vector<Prop*> &expr) : m_expr(expr) {
+	m_expr.shrink_to_fit();
+}
 
 string Or::to_string() const {
 	string ret("(");
