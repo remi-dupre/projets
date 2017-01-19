@@ -1,0 +1,36 @@
+clex.cmo : error.cmo ctab.cmi cparse.cmi
+clex.cmx : error.cmx ctab.cmx cparse.cmx
+compile.cmo : scope.cmi genlab.cmo decl.cmi cparse.cmi compile.cmi
+compile.cmx : scope.cmx genlab.cmx decl.cmx cparse.cmx compile.cmi
+compile.cmi : cparse.cmi
+cparse.cmo : error.cmo cparse.cmi
+cparse.cmx : error.cmx cparse.cmi
+cparse.cmi : error.cmo
+cprint.cmo : cprint.cmi
+cprint.cmx : cprint.cmi
+cprint.cmi : cparse.cmi
+ctab.cmo : error.cmo cparse.cmi ctab.cmi
+ctab.cmx : error.cmx cparse.cmx ctab.cmi
+ctab.cmi : cparse.cmi
+decl.cmo : scope.cmi expr.cmi exception.cmi error.cmo cparse.cmi decl.cmi
+decl.cmx : scope.cmx expr.cmx exception.cmx error.cmx cparse.cmx decl.cmi
+decl.cmi : scope.cmi cparse.cmi
+error.cmo :
+error.cmx :
+exception.cmo : cparse.cmi exception.cmi
+exception.cmx : cparse.cmx exception.cmi
+exception.cmi : error.cmo cparse.cmi
+expr.cmo : scope.cmi error.cmo cparse.cmi expr.cmi
+expr.cmx : scope.cmx error.cmx cparse.cmx expr.cmi
+expr.cmi : scope.cmi error.cmo cparse.cmi
+genlab.cmo :
+genlab.cmx :
+main.cmo : verbose.cmo error.cmo ctab.cmi cprint.cmi cparse.cmi compile.cmi \
+    clex.cmo
+main.cmx : verbose.cmx error.cmx ctab.cmx cprint.cmx cparse.cmx compile.cmx \
+    clex.cmx
+scope.cmo : scope.cmi
+scope.cmx : scope.cmi
+scope.cmi :
+verbose.cmo :
+verbose.cmx :
