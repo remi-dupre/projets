@@ -13,5 +13,8 @@ using namespace std;
 int main() {
 	Prop *gamma = read_dimacs();
 	cout << gamma->to_string() << endl;
+	cout << (gamma->is_cnf() ? "c'est sous la forme cnf" : "ce n'est pas sous la forme cnf") << endl;
 	cout << (SAT(gamma) ? "satisfiable" : "non satisfiable") << endl;
 }
+
+// http://www.cs.ubc.ca/~hoos/SATLIB/benchm.html

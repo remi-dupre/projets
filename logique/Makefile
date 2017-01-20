@@ -2,7 +2,6 @@ CXX=g++ # Compilateur
 EXEC=satsol # Les executables à générer
 
 FLAGS=-std=c++1y -O3 -s
-LIBS=-lpthread # Les bibliothèques à linker
 
 BUILD_DIR=build
 SOURCE_DIR=./
@@ -18,10 +17,9 @@ clean:
 
 # Création de l'executable
 satsol: $(OBJ)
-	$(CXX) -o $@ $^ $(LIBS) $(FLAGS) $(FILTERS)
+	$(CXX) -o $@ $^ $(FLAGS)
 
 # Compilation des fichiers
-
 $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 	@mkdir -p $(BUILD_DIR)
 	$(CXX) -c -o $@ $< $(FLAGS) $(FILTERS)

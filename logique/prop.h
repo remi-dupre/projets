@@ -1,11 +1,12 @@
+#ifndef prop_h
+#define prop_h
+
 #include <string>
 #include <vector>
 #include <algorithm>
 
 using namespace std;
 
-#ifndef prop_h
-#define prop_h
 
 enum tril {F, T, U}; // false, true, unknown
 #define tril_repr vector<string>({"F", "T", "U"})
@@ -29,6 +30,10 @@ class Prop {
 		virtual tril eval() const = 0;
 		virtual string to_string() const = 0;
 		virtual vector<freevar*> get_vars() const = 0;
+
+		virtual bool is_cnf() const;
+		virtual bool is_clause() const;
+		virtual bool is_lit() const;
 };
 
 /* ********** Constants ********** */
@@ -55,6 +60,8 @@ class Variable : public Prop {
 		tril eval() const;
 		vector<freevar*> get_vars() const;
 
+		bool is_lit() const;
+
 	private :
 		freevar *m_var;
 };
@@ -68,6 +75,8 @@ class Neg : public Prop {
 		string to_string() const;
 		tril eval() const;
 		vector<freevar*> get_vars() const;
+
+		bool is_lit() const;
 
 	private :
 		Prop *m_expr;
@@ -84,6 +93,8 @@ class And : public Prop {
 		tril eval() const;
 		vector<freevar*> get_vars() const;
 
+		bool is_cnf() const;
+
 	private :
 		vector<Prop*> m_expr;
 };
@@ -98,6 +109,8 @@ class Or : public Prop {
 		string to_string() const;
 		tril eval() const;
 		vector<freevar*> get_vars() const;
+
+		bool is_clause() const;
 
 	private :
 		vector<Prop*> m_expr;

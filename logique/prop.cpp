@@ -1,5 +1,18 @@
 #include "prop.h"
 
+
+bool Prop::is_cnf() const {
+	return false;
+}
+
+bool Prop::is_clause() const {
+	return false;
+}
+
+bool Prop::is_lit() const {
+	return false;
+}
+
 /* ********** Constants ********** */
 
 Constant::Constant(tril val) : m_val(val) {}
@@ -32,6 +45,10 @@ vector<freevar*> Variable::get_vars() const {
 	return vector<freevar*>({m_var});
 }
 
+bool Variable::is_lit() const {
+	return true;
+}
+
 /* ********** Negation ********** */
 
 Neg::Neg(Prop *expr) : m_expr(expr) {}
@@ -56,6 +73,10 @@ tril Neg::eval() const {
 
 vector<freevar*> Neg::get_vars() const {
 	return m_expr->get_vars();
+}
+
+bool Neg::is_lit() const {
+	return m_expr->is_lit();
 }
 
 /* ********** And ********** */
@@ -101,6 +122,13 @@ vector<freevar*> And::get_vars() const {
 	return ret;
 }
 
+bool And::is_cnf() const {
+	for(Prop *e : m_expr)
+		if(!e->is_clause())
+			return false;
+	return true;
+}
+
 /* ********** Or ********** */
 
 Or::Or(Prop *e1, Prop *e2) : m_expr(vector<Prop*>({e1, e2})) {}
@@ -142,4 +170,11 @@ vector<freevar*> Or::get_vars() const {
 	}
 	ret.shrink_to_fit();
 	return ret;
+}
+
+bool Or::is_clause() const {
+	for(Prop *e : m_expr)
+		if(!e->is_lit())
+			return false;
+	return true;
 }
