@@ -38,18 +38,10 @@ let rec to_string = function
 
 (* ********** ********** *)
 
-(* Little tool for the following *)
-let rec disj_merge l1 l2 = match l1, l2 with
-	| [], l -> l
-	| l, [] -> l
-	| t1::q1, t2::q2 when t1 < t2 -> t1::(disj_merge q1 (t2::q2))
-	| t1::q1, t2::q2 when t1 > t2 -> t2::(disj_merge (t1::q1) q2)
-	| t1::q1, t2::q2 -> t1::(disj_merge q1 q2)
-
 let rec get_vars = function
 	| CNF([]) -> []
-	| CNF(t::q) -> disj_merge (get_vars t) (get_vars (CNF(q)))
+	| CNF(t::q) -> Tools.disj_merge (get_vars t) (get_vars (CNF(q)))
 	| Clause([]) -> []
-	| Clause(t::q) -> disj_merge (get_vars t) (get_vars (Clause(q)))
+	| Clause(t::q) -> Tools.disj_merge (get_vars t) (get_vars (Clause(q)))
 	| Var(b) -> [b]
 	| Neg(b) -> [b]
