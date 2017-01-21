@@ -21,9 +21,9 @@ let make_var n =
 
 let rec eval = function
 	| CNF([]) -> T
-	| CNF(t::q) -> (eval t) &&& (eval (CNF(q)))
+	| CNF(t::q) -> let v = (eval t) in if v = F then F else (v &&& (eval (CNF(q))))
 	| Clause([]) -> F
-	| Clause(t::q) -> (eval t) ||| (eval (Clause(q)))
+	| Clause(t::q) -> let v = (eval t) in if v = T then T else (v ||| (eval (Clause(q))))
 	| Var(b) -> b.value
 	| Neg(b) -> tnot (b.value)
 

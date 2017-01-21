@@ -15,6 +15,14 @@ let tnot = function
 	| F -> T
 	| U -> U
 
+let lazy_or a b = match a with
+	| T -> T
+	| _ -> a ||| (b ())
+
+let lazy_and a b = match a with
+	| F -> F
+	| _ -> a &&& (b ())
+
 let string_of_trilean = function
 	| T -> "T"
 	| F -> "F"
