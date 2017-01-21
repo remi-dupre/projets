@@ -33,7 +33,7 @@ let rec get_lonely_var = function
 			None
 	| _ -> failwith "'get_lonely_var' should only be called on CNF or non-empty clauses"
 
-let rec get_constant_var phi =
+let get_constant_var phi =
 	let vars = get_vars phi in
 	List.iteri (fun i v -> v.index <- i) vars;
 	let as_var = Array.make (List.length vars) false in
@@ -61,12 +61,34 @@ let rec get_constant_var phi =
 			end;
 			Some(b)
 
+let get_max_occur_var phi =
+	let vars = get_vars phi in
+	List.iteri (fun i v -> v.index <- i) vars;
+	let occurs = Array.make (List.length vars) 0 in
+	let rec parcours = function
+		| CNF(t::q) -> parcours t ; parcours (CNF(q))
+		| Clause(t::q) -> parcours t ; parcours (Clause(q))
+		| Var(b) -> occurs.(b.index) <- 1 + occurs.(b.index)
+		| Neg(b) -> occurs.(b.index) <- 1 + occurs.(b.index)
+		| _ -> ()
+	in
+	parcours phi;
+	let nbmax = ref 0 in
+	let ret = ref (List.hd vars) in
+	List.iter (fun b ->
+		if occurs.(b.index) > !nbmax then begin
+			nbmax := occurs.(b.index);
+			ret := b
+		end
+	) vars;
+	!ret
+
 let select_var phi =
 	match get_lonely_var phi with
 		| Some(v) -> v
 		| None -> match get_constant_var phi with
 			| Some(v) -> v
-			| None -> List.hd (get_vars phi)
+			| None -> get_max_occur_var phi
 
 let rec solve phi =
 	let psi = simplifier phi in
