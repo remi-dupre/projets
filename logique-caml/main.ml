@@ -1,6 +1,5 @@
-open Printf;;
-open Cnf;;
-open Trilean;;
+open Printf
 
 let phi = Input.dimacs () in
-printf "%s : %b\n" (to_string phi) (Naif.solve phi)
+(*printf "%s : %b\n" (to_string phi) (Dpll.solve phi)*)
+printf "%b\n" (Dpll.solve phi)

@@ -25,7 +25,6 @@ let dimacs () = match get_dimacs_type () with
 			let filt = fun s -> try 0 <> int_of_string s with _ -> false in
 			let nums = List.filter filt nums in
 			let nums = List.map int_of_string nums in
-			let nums = List.filter (fun x -> x <> 0) nums in
 			let nums = List.map (fun id ->
 				if id > 0 then
 					Var(vars.(id-1))
