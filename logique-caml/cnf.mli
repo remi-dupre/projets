@@ -1,6 +1,7 @@
 type boolvar = {
 	name : string;
-	mutable value : Trilean.t
+	mutable value : Trilean.t;
+	mutable index : int
 }
 
 type formula =

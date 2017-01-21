@@ -4,7 +4,8 @@ open Trilean
 
 type boolvar = {
 	name : string;
-	mutable value : Trilean.t
+	mutable value : Trilean.t;
+	mutable index : int (* Only used for calculations *)
 }
 
 type formula =
@@ -14,7 +15,7 @@ type formula =
 	| Neg of boolvar
 
 let make_var n =
-	{name = n ; value = U}
+	{name = n ; value = U ; index = -1}
 
 (* *********** Extract information ********** *)
 

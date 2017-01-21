@@ -5,15 +5,19 @@ FLAGS=-O3
 BUILD_DIR=build
 SOURCE_DIR=.
 
-OBJ=$(BUILD_DIR)/trilean.cmx \
+OBJ=$(BUILD_DIR)/tools.cmx \
+	$(BUILD_DIR)/trilean.cmx \
 	$(BUILD_DIR)/cnf.cmx \
 	$(BUILD_DIR)/naif.cmx \
+	$(BUILD_DIR)/dpll.cmx \
 	$(BUILD_DIR)/input.cmx \
 	$(BUILD_DIR)/main.cmx
 
-INC=$(BUILD_DIR)/trilean.cmi \
+INC=$(BUILD_DIR)/tools.cmi \
+	$(BUILD_DIR)/trilean.cmi \
 	$(BUILD_DIR)/cnf.cmi \
 	$(BUILD_DIR)/naif.cmi \
+	$(BUILD_DIR)/dpll.cmi \
 	$(BUILD_DIR)/input.cmi
 
 
@@ -27,7 +31,6 @@ clean:
 	rm $(EXEC)
 
 $(BUILD_DIR)/%.cmi: $(SOURCE_DIR)/%.mli
-	@rm -f $(BUILD_DIR)/$*.mli
 	@mkdir -p $(BUILD_DIR)
 	$(CMPL) -c -o $@ $(SOURCE_DIR)/$*.mli -I $(BUILD_DIR) $(FLAGS)
 
