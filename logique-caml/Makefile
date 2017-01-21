@@ -4,12 +4,14 @@ EXEC=satsol # Les executables à générer
 BUILD_DIR=build
 SOURCE_DIR=.
 
-SRC=$(wildcard $(SOURCE_DIR)/*.ml) # La liste des .cpp
-OBJ=$(patsubst $(SOURCE_DIR)/%.ml,$(BUILD_DIR)/%.cmo,$(SRC))
+OBJ=$(BUILD_DIR)/trilean.cmo \
+	$(BUILD_DIR)/cnf.cmo \
+	$(BUILD_DIR)/naif.cmo \
+	$(BUILD_DIR)/main.cmo
 
-SRC_INC=$(wildcard $(SOURCE_DIR)/*.mli)
-INC=$(patsubst $(SOURCE_DIR)/%.mli,$(BUILD_DIR)/%.cmi,$(SRC_INC))
-
+INC=$(BUILD_DIR)/trilean.cmi \
+	$(BUILD_DIR)/cnf.cmi \
+	$(BUILD_DIR)/naif.cmi
 
 
 all: satsol
@@ -23,7 +25,7 @@ clean:
 
 $(BUILD_DIR)/%.cmi: $(SOURCE_DIR)/%.mli
 	@mkdir -p $(BUILD_DIR)
-	ocamlc -c -o $@ $(SOURCE_DIR)/$*.mli
+	ocamlc -c -o $@ $(SOURCE_DIR)/$*.mli -I $(BUILD_DIR)
 
 $(BUILD_DIR)/%.cmo: $(SOURCE_DIR)/%.ml
 	@mkdir -p $(BUILD_DIR)
