@@ -1,3 +1,10 @@
+class Prop;
+class Variable;
+class Neg;
+class And;
+class Or;
+
+
 #ifndef prop_h
 #define prop_h
 
@@ -94,6 +101,7 @@ class And : public Prop {
 		vector<freevar*> get_vars() const;
 
 		bool is_cnf() const;
+		vector<Or*> get_clauses() const;
 
 	private :
 		vector<Prop*> m_expr;

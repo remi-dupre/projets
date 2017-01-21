@@ -1,7 +1,7 @@
 CXX=g++ # Compilateur
 EXEC=satsol # Les executables à générer
 
-FLAGS=-std=c++1y -O3 -s
+FLAGS=-std=c++1y -O3 -s -Wall
 
 BUILD_DIR=build
 SOURCE_DIR=./

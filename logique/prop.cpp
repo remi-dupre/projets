@@ -69,6 +69,7 @@ tril Neg::eval() const {
 			return U;
 			break;
 	}
+	return U;
 }
 
 vector<freevar*> Neg::get_vars() const {
@@ -99,6 +100,7 @@ tril And::eval() const {
 	tril val = T;
 	for(Prop *e : m_expr) {
 		switch(e->eval()) {
+			case T : break;
 			case F :
 				return F;
 				break;
@@ -129,6 +131,13 @@ bool And::is_cnf() const {
 	return true;
 }
 
+vector<Or*> And::get_clauses() const {
+	vector<Or*> ret(m_expr.size());
+	for(int i=0 ; i < ret.size() ; i++)
+		ret[i] = (Or*) m_expr[i];
+	return ret;
+}
+
 /* ********** Or ********** */
 
 Or::Or(Prop *e1, Prop *e2) : m_expr(vector<Prop*>({e1, e2})) {}
@@ -152,6 +161,7 @@ tril Or::eval() const {
 			case T :
 				return T;
 				break;
+			case F : break;
 			case U :
 				val = U;
 				break;

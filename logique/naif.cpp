@@ -1,7 +1,7 @@
 #include "naif.h"
 
 bool next_step(vector<freevar*> &config) {
-	int i;
+	unsigned i;
 	for(i=0 ; i < config.size() && config[i]->value == T ; i++)
 		config[i]->value = F;
 
