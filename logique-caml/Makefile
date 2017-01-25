@@ -11,6 +11,7 @@ OBJ=$(BUILD_DIR)/tools.cmx \
 	$(BUILD_DIR)/naif.cmx \
 	$(BUILD_DIR)/dpll.cmx \
 	$(BUILD_DIR)/input.cmx \
+	$(BUILD_DIR)/picross.cmx \
 	$(BUILD_DIR)/main.cmx
 
 INC=$(BUILD_DIR)/tools.cmi \
@@ -18,13 +19,14 @@ INC=$(BUILD_DIR)/tools.cmi \
 	$(BUILD_DIR)/cnf.cmi \
 	$(BUILD_DIR)/naif.cmi \
 	$(BUILD_DIR)/dpll.cmi \
+	$(BUILD_DIR)/picross.cmi \
 	$(BUILD_DIR)/input.cmi
 
 
-all: satsol
+all: $(EXEC)
 
-satsol: $(INC) $(OBJ)
-	$(CMPL) -g -o $(EXEC) $(OBJ) $(FLAGS)
+$(EXEC): $(INC) $(OBJ)
+	$(CMPL) $(FLAGS) -I $(BUILD_DIR) -o $(EXEC) $(OBJ)
 
 clean:
 	rm -rf build/
@@ -32,8 +34,8 @@ clean:
 
 $(BUILD_DIR)/%.cmi: $(SOURCE_DIR)/%.mli
 	@mkdir -p $(BUILD_DIR)
-	$(CMPL) -c -o $@ $(SOURCE_DIR)/$*.mli -I $(BUILD_DIR) $(FLAGS)
+	$(CMPL) -c $(FLAGS) -I $(BUILD_DIR) -o $@ $(SOURCE_DIR)/$*.mli
 
 $(BUILD_DIR)/%.cmx: $(SOURCE_DIR)/%.ml
 	@mkdir -p $(BUILD_DIR)
-	$(CMPL) -c -o $@ $(SOURCE_DIR)/$*.ml -I $(BUILD_DIR) $(FLAGS)
+	$(CMPL) -c $(FLAGS) -I $(BUILD_DIR) -o $@ $(SOURCE_DIR)/$*.ml
