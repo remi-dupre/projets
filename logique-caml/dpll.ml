@@ -85,7 +85,7 @@ let get_max_occur_var phi =
 
 let select_var phi =
 	match get_lonely_var phi with
-		| Some(v) -> v
+		| Some(v) 	-> v
 		| None -> match get_constant_var phi with
 			| Some(v) -> v
 			| None -> get_max_occur_var phi

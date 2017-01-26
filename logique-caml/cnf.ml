@@ -30,7 +30,7 @@ let rec eval = function
 let rec to_string = function
 	| CNF([]) -> ""
 	| CNF([e]) ->  "(" ^ to_string e ^ ")"
-	| CNF(t::q) -> "(" ^ (to_string t) ^ ")^" ^ (to_string (CNF(q)))
+	| CNF(t::q) -> "(" ^ (to_string t) ^ ")\n^" ^ (to_string (CNF(q)))
 	| Clause([]) -> ""
 	| Clause([e]) -> to_string e
 	| Clause(t::q) -> (to_string t) ^ "+" ^ (to_string (Clause(q)))
