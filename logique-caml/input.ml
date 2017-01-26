@@ -3,7 +3,7 @@ open Cnf
 type dimacs_types = CNF_file of (int * int) (* nb variables * nb clauses *)
 
 let rec get_dimacs_type () =
-	let entry = String.split_on_char ' ' (read_line ()) in
+	let entry = Tools.split (read_line ()) in
 	let entry = List.filter (fun x -> x <> "") entry in
 	match entry with
 		| [] -> get_dimacs_type ()
