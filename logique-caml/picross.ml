@@ -44,7 +44,16 @@ let build_sat pb =
 
 				exists := Var(begin_at_pos.(k).(j)) :: (!exists)
 			done;
-			clauses := Clause(!exists) :: (!clauses)
+			clauses := Clause([ Neg(begin_at_pos.(k).(0)) ]) :: Clause([ Neg(begin_at_pos.(k).(n+1)) ]) :: Clause(!exists) :: (!clauses)
+		done;
+		for j = 1 to n do
+			let starts_need = ref [ Neg(grille.(i).(j)) ] in
+			for k = 0 to nb_seq-1 do
+				for p = max 0 (j-vert.(i-1).(k)+1) to j do
+					starts_need := Var(begin_at_pos.(k).(p)) :: (!starts_need)
+				done
+			done;
+			clauses := Clause(!starts_need) :: (!clauses)
 		done
 	done;
 
@@ -70,7 +79,28 @@ let build_sat pb =
 
 				exists := Var(begin_at_pos.(k).(j)) :: (!exists)
 			done;
-			clauses := Clause(!exists) :: (!clauses)
+			clauses := Clause([ Neg(begin_at_pos.(k).(0)) ]) :: Clause([ Neg(begin_at_pos.(k).(n+1)) ]) :: Clause(!exists) :: (!clauses)
+		done;
+		for j = 1 to n do
+			let starts_need = ref [ Neg(grille.(j).(i)) ] in
+			for k = 0 to nb_seq-1 do
+				for p = max 0 (j-horiz.(i-1).(k)+1) to j do
+					starts_need := Var(begin_at_pos.(k).(p)) :: (!starts_need)
+				done
+			done;
+			clauses := Clause(!starts_need) :: (!clauses)
 		done
 	done;
-	CNF(!clauses)
+
+	let _ = Dpll.solve (CNF(!clauses)) in
+	for j = 1 to n do
+		for i = 1 to n do
+			match grille.(i).(j).value with
+			| Trilean.T -> printf "#"
+			| Trilean.F -> printf " "
+			| Trilean.U -> printf "O"
+		done;
+		printf "\n";
+	done;
+	(CNF(!clauses))
+
