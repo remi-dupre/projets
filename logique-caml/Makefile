@@ -1,6 +1,6 @@
 CMPL=ocamlopt # Compilateur
 EXEC=satsol # Les executables à générer
-FLAGS=-O3
+FLAGS=
 
 BUILD_DIR=build
 SOURCE_DIR=.
