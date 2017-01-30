@@ -21,7 +21,7 @@ let build_sat pb =
 			::(!clauses)
 	done;
 	for i = 0 to nl+1 do
-		clauses := Clause([Neg(grille.(0).(i))]) (* Borders mustn't be filled*)
+		clauses := Clause([Neg(grille.(0).(i))]) (* Borders mustn't be filled *)
 			::Clause([Neg(grille.(nc+1).(i))])
 			::(!clauses)
 	done;

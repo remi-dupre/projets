@@ -46,3 +46,20 @@ let rec get_vars = function
 	| Clause(t::q) -> Tools.disj_merge (get_vars t) (get_vars (Clause(q)))
 	| Var(b) -> [b]
 	| Neg(b) -> [b]
+
+(* ********** Outputs ********** *)
+
+let rec clause_line = function
+	| [] -> "0\n"
+	| Var(t)::q -> string_of_int (t.index) ^ " " ^ (clause_line q)
+	| Neg(t)::q -> string_of_int (-t.index) ^ " " ^ (clause_line q)
+
+let make_dimacs = function
+	| CNF(clauses) ->
+		let vars = get_vars (CNF(clauses)) in
+		List.iteri (fun i v -> v.index <- i+1) vars;
+		List.fold_left (fun ret clause -> match clause with
+			| Clause(l) -> ret ^ (clause_line l)
+			| _ -> failwith "Not a CNF"
+		) (Printf.sprintf "p cnf %d %d\n" (List.length vars) (List.length clauses)) clauses
+	| _ -> failwith "Not a CNF"

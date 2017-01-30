@@ -15,3 +15,4 @@ val get_vars : formula -> boolvar list
 val eval : formula -> Trilean.t
 
 val to_string : formula -> string
+val make_dimacs : formula -> string
