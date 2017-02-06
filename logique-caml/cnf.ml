@@ -53,6 +53,7 @@ let rec clause_line = function
 	| [] -> "0\n"
 	| Var(t)::q -> string_of_int (t.index) ^ " " ^ (clause_line q)
 	| Neg(t)::q -> string_of_int (-t.index) ^ " " ^ (clause_line q)
+	| _ -> failwith "Not a cnf at cnf.ml:clause_line"
 
 let make_dimacs = function
 	| CNF(clauses) ->
@@ -63,3 +64,4 @@ let make_dimacs = function
 			| _ -> failwith "Not a CNF"
 		) (Printf.sprintf "p cnf %d %d\n" (List.length vars) (List.length clauses)) clauses
 	| _ -> failwith "Not a CNF"
+

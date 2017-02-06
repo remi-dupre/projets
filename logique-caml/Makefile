@@ -25,7 +25,7 @@ INC=$(BUILD_DIR)/tools.cmi \
 
 all: $(EXEC)
 
-$(EXEC): $(INC) $(OBJ)
+$(EXEC): $(INC) $(OBJ) 
 	$(CMPL) $(FLAGS) -I $(BUILD_DIR) -o $(EXEC) $(OBJ)
 
 clean:
@@ -39,3 +39,4 @@ $(BUILD_DIR)/%.cmi: $(SOURCE_DIR)/%.mli
 $(BUILD_DIR)/%.cmx: $(SOURCE_DIR)/%.ml
 	@mkdir -p $(BUILD_DIR)
 	$(CMPL) -c $(FLAGS) -I $(BUILD_DIR) -o $@ $(SOURCE_DIR)/$*.ml
+

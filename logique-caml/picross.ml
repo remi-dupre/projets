@@ -25,16 +25,15 @@ let build_sat pb =
 			::Clause([Neg(grille.(nc+1).(i))])
 			::(!clauses)
 	done;
-
 	for i = 1 to nc do
 		let nb_seq = Array.length (vert.(i-1)) in
-		let begin_at_pos = Array.make_matrix nb_seq (nc+2) (make_var "vide") in
+		let begin_at_pos = Array.make_matrix nb_seq (nl+2) (make_var "vide") in
 		for k = 0 to nb_seq-1 do
 			let exists = ref [] in
-			for j = 1 to nc do
+			for j = 1 to nl do
 				begin_at_pos.(k).(j) <- make_var (sprintf "start_c%d(%d@%d)" (i-1) k (j-1));
 				for l = 0 to k-1 do
-					for a = j to nc do
+					for a = j to nl do
 						clauses := Clause([Neg(begin_at_pos.(l).(a)) ; Neg(begin_at_pos.(k).(j))]) :: (!clauses)
 					done
 				done;
@@ -48,7 +47,7 @@ let build_sat pb =
 
 				exists := Var(begin_at_pos.(k).(j)) :: (!exists)
 			done;
-			clauses := Clause([ Neg(begin_at_pos.(k).(0)) ]) :: Clause([ Neg(begin_at_pos.(k).(nc+1)) ]) :: Clause(!exists) :: (!clauses)
+			clauses := Clause([ Neg(begin_at_pos.(k).(0)) ]) :: Clause([ Neg(begin_at_pos.(k).(nl+1)) ]) :: Clause(!exists) :: (!clauses)
 		done;
 		for j = 1 to nc do
 			let starts_need = ref [ Neg(grille.(i).(j)) ] in
@@ -60,20 +59,18 @@ let build_sat pb =
 			clauses := Clause(!starts_need) :: (!clauses)
 		done
 	done;
-
 	for i = 1 to nl do
 		let nb_seq = Array.length (horiz.(i-1)) in
-		let begin_at_pos = Array.make_matrix nb_seq (nl+2) (make_var "vide") in
+		let begin_at_pos = Array.make_matrix nb_seq (nc+2) (make_var "vide") in
 		for k = 0 to nb_seq-1 do
 			let exists = ref [] in
-			for j = 1 to nl do
+			for j = 1 to nc do
 				begin_at_pos.(k).(j) <- make_var (sprintf "start_l%d(%d@%d)" (i-1) k (j-1));
 				for l = 0 to k-1 do
-					for a = j to nl do
+					for a = j to nc do
 						clauses := Clause([Neg(begin_at_pos.(l).(a)) ; Neg(begin_at_pos.(k).(j))]) :: (!clauses)
 					done
 				done;
-
 				let mm = min (j + horiz.(i-1).(k) - 1) (nc+1) in
 				for a = j to mm do
 					clauses := Clause([ Neg(begin_at_pos.(k).(j)) ; Var(grille.(a).(i)) ]) :: (!clauses)
@@ -83,7 +80,7 @@ let build_sat pb =
 
 				exists := Var(begin_at_pos.(k).(j)) :: (!exists)
 			done;
-			clauses := Clause([ Neg(begin_at_pos.(k).(0)) ]) :: Clause([ Neg(begin_at_pos.(k).(nl+1)) ]) :: Clause(!exists) :: (!clauses)
+			clauses := Clause([ Neg(begin_at_pos.(k).(0)) ]) :: Clause([ Neg(begin_at_pos.(k).(nc+1)) ]) :: Clause(!exists) :: (!clauses)
 		done;
 		for j = 1 to nc do
 			let starts_need = ref [ Neg(grille.(j).(i)) ] in
@@ -107,4 +104,3 @@ let build_sat pb =
 		printf "\n";
 	done;
 	(CNF(!clauses))
-

@@ -1,6 +1,10 @@
 open Trilean
 open Cnf
 
+(* A general constant to select selection method *)
+type var_selection_enum = RANDOM | MAX_PRES
+let var_selection = ref MAX_PRES
+
 let rec simplifier = function
 	| CNF(t::q) when (Cnf.eval t) = T -> simplifier (CNF(q))
 	| CNF(t::q) ->
@@ -61,6 +65,13 @@ let get_constant_var phi =
 			end;
 			Some(b)
 
+(* ********** Var Selection ********** *)
+
+let get_random_var phi =
+	let vars = get_vars phi in
+	let i = Random.int (List.length vars) in
+	List.nth vars i
+
 let get_max_occur_var phi =
 	let vars = get_vars phi in
 	List.iteri (fun i v -> v.index <- i) vars;
@@ -88,7 +99,11 @@ let select_var phi =
 		| Some(v) 	-> v
 		| None -> match get_constant_var phi with
 			| Some(v) -> v
-			| None -> get_max_occur_var phi
+			| None -> match !var_selection with
+				| RANDOM -> get_random_var phi
+				| MAX_PRES -> get_max_occur_var phi
+
+(* ********** Solve a SAT formula ********* *)
 
 let rec solve phi =
 	let psi = simplifier phi in
