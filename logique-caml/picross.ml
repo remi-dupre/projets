@@ -93,7 +93,7 @@ let build_sat pb =
 		done
 	done;
 
-	let _ = Dpll.solve (CNF(!clauses)) in
+(*	let _ = Dpll.solve (CNF(!clauses)) in
 	for j = 1 to nl do
 		for i = 1 to nc do
 			match grille.(i).(j).value with
@@ -103,4 +103,4 @@ let build_sat pb =
 		done;
 		printf "\n";
 	done;
-	(CNF(!clauses))
+*)	(CNF(!clauses))

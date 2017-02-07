@@ -37,8 +37,6 @@ let rec to_string = function
 	| Var(b) -> b.name
 	| Neg(b) -> "-" ^ b.name
 
-(* ********** ********** *)
-
 let rec get_vars = function
 	| CNF([]) -> []
 	| CNF(t::q) -> Tools.disj_merge (get_vars t) (get_vars (CNF(q)))

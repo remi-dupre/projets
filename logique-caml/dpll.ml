@@ -2,7 +2,7 @@ open Trilean
 open Cnf
 
 (* A general constant to select selection method *)
-type var_selection_enum = RANDOM | MAX_PRES
+type var_selection_enum = RANDOM | MAX_PRES | MAX_UP
 let var_selection = ref MAX_PRES
 
 let rec simplifier = function
@@ -94,6 +94,35 @@ let get_max_occur_var phi =
 	) vars;
 	!ret
 
+let get_up_var phi =
+	let rec count_up var phi =
+		let with_neg = ref 0 in
+		let with_pos = ref 0 in
+		match phi with
+			| CNF(l) -> List.iter (fun clause ->
+					match clause with
+						| Clause(l) ->
+							if List.length l == 2 then begin
+								if List.mem (Var(var)) l then
+									incr with_pos
+								else if List.mem (Neg(var)) l then
+									incr with_neg
+							end
+						| _ -> failwith "Not a CNF at dpll.ml:get_up_vars"
+				) l ; max (!with_neg) (!with_pos)
+			| _ -> failwith "Not a CNF at dpll.ml:get_up_vars"
+	in
+	let max_var = ref (List.hd (get_vars phi)) in
+	let max_up = ref 0 in
+	List.iter (fun var ->
+		let nb = count_up var phi in
+		if nb > !max_up then begin
+			max_up := nb;
+			max_var := var
+		end
+	) (get_vars phi);
+	!max_var
+
 let select_var phi =
 	match get_lonely_var phi with
 		| Some(v) 	-> v
@@ -102,6 +131,7 @@ let select_var phi =
 			| None -> match !var_selection with
 				| RANDOM -> get_random_var phi
 				| MAX_PRES -> get_max_occur_var phi
+				| MAX_UP -> get_up_var phi
 
 (* ********** Solve a SAT formula ********* *)
 
