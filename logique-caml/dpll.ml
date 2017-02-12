@@ -1,10 +1,11 @@
 open Trilean
 open Cnf
 
-(* A general constant to select selection method *)
+(* A general constant to choose selection method *)
 type var_selection_enum = RANDOM | MAX_PRES | MAX_UP
 let var_selection = ref MAX_PRES
 
+(* Supprime les clauses évaluées à vrai (en triléen) et les variables évaluées à faux *)
 let rec simplifier = function
 	| CNF(t::q) when (Cnf.eval t) = T -> simplifier (CNF(q))
 	| CNF(t::q) ->
@@ -20,7 +21,7 @@ let rec simplifier = function
 		end
 	| e -> e
 
-
+(* Retourne une variable qui est toute seule dans sa clause, ou None s'il n'en existe pas *)
 let rec get_lonely_var = function
 	| CNF([]) -> None
 	| CNF(t::q) ->
@@ -37,6 +38,7 @@ let rec get_lonely_var = function
 			None
 	| _ -> failwith "'get_lonely_var' should only be called on CNF or non-empty clauses"
 
+(* Retourne une variable qui apparait toujours en négation ou toujours positivement et la fixe à la valeur qui valide ses clauses *)
 let get_constant_var phi =
 	let vars = get_vars phi in
 	List.iteri (fun i v -> v.index <- i) vars;
@@ -67,11 +69,13 @@ let get_constant_var phi =
 
 (* ********** Var Selection ********** *)
 
+(* Sélectionne un pivot aléatoire *)
 let get_random_var phi =
 	let vars = get_vars phi in
 	let i = Random.int (List.length vars) in
 	List.nth vars i
 
+(* Sélectionne la variable qui apparait le plus dans la formule *)
 let get_max_occur_var phi =
 	let vars = get_vars phi in
 	List.iteri (fun i v -> v.index <- i) vars;
@@ -94,6 +98,7 @@ let get_max_occur_var phi =
 	) vars;
 	!ret
 
+(* Sélectionne la variable qui laisserait le plus de clauses unitaire après avoir été supprimée *)
 let get_up_var phi =
 	let rec count_up var phi =
 		let with_neg = ref 0 in
@@ -123,6 +128,7 @@ let get_up_var phi =
 	) (get_vars phi);
 	!max_var
 
+(* Selectionne un pivot suivant la méthode définie par 'var_selection' *)
 let select_var phi =
 	match get_lonely_var phi with
 		| Some(v) 	-> v
@@ -135,6 +141,7 @@ let select_var phi =
 
 (* ********** Solve a SAT formula ********* *)
 
+(* Décide de la satisfiabilité d'une formule *)
 let rec solve phi =
 	let psi = simplifier phi in
 	match eval psi with

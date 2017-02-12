@@ -1,7 +1,13 @@
 open Trilean
 
+(* Implémentation des fonctions sur les cnf
+ * Le type défini ici n'impose pas le format cnf ('Clause' est équivalent à 'Or' et CNF à 'And')
+ * Mais les fonctions supposerons quand même que ce format est respecté
+ *)
+
 (* ********** Build a CNF ********** *)
 
+(* Une variable booléene, qui peut être associée à des informations pour les calculs *)
 type boolvar = {
 	id : int;			(* To ensure unicity *)
 	name : string;
@@ -22,6 +28,7 @@ let make_var n =
 
 (* *********** Extract information ********** *)
 
+(* Évalue le cnf avec les valeurs associées à ses variables respectives *)
 let rec eval = function
 	| CNF([]) -> T
 	| CNF(t::q) -> let v = (eval t) in if v = F then F else (v &&& (eval (CNF(q))))
@@ -30,9 +37,10 @@ let rec eval = function
 	| Var(b) -> b.value
 	| Neg(b) -> tnot (b.value)
 
+(* Affiche la formule *)
 let rec to_string = function
 	| CNF([]) -> ""
-	| CNF([e]) ->  "(" ^ to_string e ^ ")"
+	| CNF([e]) -> "(" ^ to_string e ^ ")"
 	| CNF(t::q) -> "(" ^ (to_string t) ^ ")\n^" ^ (to_string (CNF(q)))
 	| Clause([]) -> ""
 	| Clause([e]) -> to_string e
@@ -40,6 +48,7 @@ let rec to_string = function
 	| Var(b) -> b.name
 	| Neg(b) -> "-" ^ b.name
 
+(* Retourne la liste des variables booléenes présentes dans la formule *)
 let rec get_vars = function
 	| CNF([]) -> []
 	| CNF(t::q) -> Tools.disj_merge (get_vars t) (get_vars (CNF(q)))
@@ -56,6 +65,7 @@ let rec clause_line = function
 	| Neg(t)::q -> string_of_int (-t.index) ^ " " ^ (clause_line q)
 	| _ -> failwith "Not a cnf at cnf.ml:clause_line"
 
+(* Génère un fichier dimacs contenant *)
 let make_dimacs = function
 	| CNF(clauses) ->
 		let vars = get_vars (CNF(clauses)) in

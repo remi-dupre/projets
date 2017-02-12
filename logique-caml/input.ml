@@ -1,9 +1,11 @@
 open Cnf
 
+(* Représentation de l'en-tête d'un fichier dimacs *)
 type dimacs_types =
 	| CNF_file of (int * int) (* nb variables * nb clauses *)
 	| Picross of (int * int) (* nb colones / nb lignes *)
 
+(* Lis l'en-tête d'un dimacs *)
 let rec get_dimacs_type () =
 	let entry = Tools.split (read_line ()) in
 	let entry = List.filter (fun x -> x <> "") entry in
@@ -22,6 +24,7 @@ let rec get_dimacs_type () =
 			end
 		| _ -> failwith "unknown dimacs type"
 
+(* Lis une formule cnf depuis un dimacs *)
 let dimacs () = match get_dimacs_type () with
 	| CNF_file(nb_vars, nb_clauses) ->
 		let vars = Array.init nb_vars (fun i -> make_var ("P" ^ string_of_int (i+1))) in
@@ -43,6 +46,11 @@ let dimacs () = match get_dimacs_type () with
 		CNF(!ret)
 	| _ -> failwith "Not a cf input"
 
+(* Lis un picross depuis un format custom très proche de dimacs :
+ * Commence par une série de commentaires débutants par 'c'
+ * Une ligne contient "p picross nb_colones nb_lignes"
+ * Suivent les indices de colones puis les indices de ligne, chaque ligne/colone étant séparé par un espace
+ *)
 let read_picross () = match get_dimacs_type () with
 	| Picross(nb_c, nb_l) ->
 		let col = Array.make nb_c (Array.make 0 0) in

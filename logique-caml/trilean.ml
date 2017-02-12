@@ -1,3 +1,5 @@
+(* Un type triléen, avec l'ajout des opérateurs associés : &&& ||| et tnot *)
+
 type t = T | F | U
 
 let ( ||| ) a b = match a, b with
@@ -14,6 +16,8 @@ let tnot = function
 	| T -> F
 	| F -> T
 	| U -> U
+
+(* Une tentative d'implémentation pratique de l'évaluation paresseuse, mais finalement ca optimisait quasiment pas *)
 
 let lazy_or a b = match a with
 	| T -> T

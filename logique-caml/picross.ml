@@ -5,6 +5,7 @@ open Tools
 
 type t = int array array * int array array
 
+(* Construit une formule qui représente une grille de picross *)
 let build_sat pb =
 	let vert, horiz = pb in
 	let nc = Array.length vert in
@@ -30,7 +31,6 @@ let build_sat pb =
 	for i = 1 to nc do
 		let nb_seq = Array.length (vert.(i-1)) in
 		let begin_at_pos = Array.init nb_seq (fun i -> Array.init (nl+2) (fun j -> make_var "vide")) in
-		(*let begin_at_pos = Array.make_matrix nb_seq (nl+2) (make_var "vide2") in*)
 		for k = 0 to nb_seq-1 do
 			let exists = ref [] in
 			for j = 1 to nl do
@@ -65,7 +65,6 @@ let build_sat pb =
 	for i = 1 to nl do
 		let nb_seq = Array.length (horiz.(i-1)) in
 		let begin_at_pos = Array.init nb_seq (fun x -> Array.init (nc+2) (fun y -> make_var "vide")) in
-	(*)	let begin_at_pos = Array.make_matrix nb_seq (nc+2) (make_var "vide3") in*)
 		for k = 0 to nb_seq-1 do
 			let exists = ref [] in
 			for j = 1 to nc do
@@ -98,6 +97,7 @@ let build_sat pb =
 	done;
 	(CNF(!clauses))
 
+(* Extrait d'une formule résolue la grille qui est solution *)
 let extract_grid phi =
 	let vars = get_vars phi in
 	let nb_l, nb_c =
@@ -122,6 +122,7 @@ let extract_grid phi =
 	) vars;
 	grid
 
+(* Écrit la grille, représentée par une matrice de booléens *)
 let debug_grid mat =
 	let n = Array.length mat in
 	let m = Array.length mat.(0) in
