@@ -1,0 +1,15 @@
+c Un picross en forme de croix :
+c  ___
+c |# #|
+c | # |
+c |# #|
+c  ‾‾‾
+p picross 3 3
+1 1 0
+1 0
+1 1 0
+1 1 0
+1 0
+1 1 0
+1 0
+

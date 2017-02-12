@@ -1,4 +1,5 @@
 type boolvar = {
+	id : int;
 	name : string;
 	mutable value : Trilean.t;
 	mutable index : int

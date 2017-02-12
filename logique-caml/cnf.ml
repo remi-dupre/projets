@@ -3,6 +3,7 @@ open Trilean
 (* ********** Build a CNF ********** *)
 
 type boolvar = {
+	id : int;			(* To ensure unicity *)
 	name : string;
 	mutable value : Trilean.t;
 	mutable index : int (* Only used for calculations *)
@@ -14,8 +15,10 @@ type formula =
 	| Var of boolvar
 	| Neg of boolvar
 
+let max_id = ref 0
 let make_var n =
-	{name = n ; value = U ; index = -1}
+	incr max_id;
+	{id = !max_id ; name = n ; value = U ; index = -1}
 
 (* *********** Extract information ********** *)
 
@@ -60,6 +63,6 @@ let make_dimacs = function
 		List.fold_left (fun ret clause -> match clause with
 			| Clause(l) -> ret ^ (clause_line l)
 			| _ -> failwith "Not a CNF"
-		) (Printf.sprintf "p cnf %d %d\n" (List.length vars) (List.length clauses)) clauses
+		) (Printf.sprintf "p cnf %d %d\n" (List.length vars) (List.length clauses)) (List.rev clauses)
 	| _ -> failwith "Not a CNF"
 

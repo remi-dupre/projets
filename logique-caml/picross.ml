@@ -9,7 +9,7 @@ let build_sat pb =
 	let vert, horiz = pb in
 	let nc = Array.length vert in
 	let nl = Array.length horiz in
-	let grille = Array.make_matrix (nc+2) (nl+2) (make_var "vide") in
+	let grille = Array.init (nc+2) (fun i -> Array.init (nl+2) (fun j -> make_var "vide")) in
 	for i = 0 to nc+1 do
 		for j = 0 to nl+1 do
 			grille.(i).(j) <- make_var (sprintf "g %d %d" (i-1) (j-1))
@@ -29,7 +29,8 @@ let build_sat pb =
 	done;
 	for i = 1 to nc do
 		let nb_seq = Array.length (vert.(i-1)) in
-		let begin_at_pos = Array.make_matrix nb_seq (nl+2) (make_var "vide") in
+		let begin_at_pos = Array.init nb_seq (fun i -> Array.init (nl+2) (fun j -> make_var "vide")) in
+		(*let begin_at_pos = Array.make_matrix nb_seq (nl+2) (make_var "vide2") in*)
 		for k = 0 to nb_seq-1 do
 			let exists = ref [] in
 			for j = 1 to nl do
@@ -63,7 +64,8 @@ let build_sat pb =
 	done;
 	for i = 1 to nl do
 		let nb_seq = Array.length (horiz.(i-1)) in
-		let begin_at_pos = Array.make_matrix nb_seq (nc+2) (make_var "vide") in
+		let begin_at_pos = Array.init nb_seq (fun x -> Array.init (nc+2) (fun y -> make_var "vide")) in
+	(*)	let begin_at_pos = Array.make_matrix nb_seq (nc+2) (make_var "vide3") in*)
 		for k = 0 to nb_seq-1 do
 			let exists = ref [] in
 			for j = 1 to nc do
