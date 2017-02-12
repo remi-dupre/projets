@@ -1,4 +1,5 @@
 open Printf
+open Trilean
 open Cnf
 open Tools
 

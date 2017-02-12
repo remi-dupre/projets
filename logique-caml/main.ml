@@ -6,8 +6,10 @@ let help =
 "-> satsol solve [méthode]
   résoud une instance de sat donnée sur l'entrée standart
   méthode : random, max-pres, up (defaut : max-pres)
--> satsol picross
+-> satsol picross solve
   prend un picross sur l'entrée standart et affiche la grille de la solution
+-> satsol picross convert
+  prend en entrée un picross et sort le dimacs correspondant (on perd l'association variable / grille)
 " in
 let n = Array.length (Sys.argv) in
 if n = 1 then begin
@@ -27,11 +29,13 @@ end else match Sys.argv.(1) with
 		end
 	| "picross" ->
 		let picross = Input.read_picross () in
-		let phi = Picross.build_sat picross in 
-		let grid = Picross.extract_grid phi in
-		if not (solve phi) then
-			printf "Pas de solution\n"
-		else
-			Picross.debug_grid (Picross.extract_grid phi)
+		let phi = Picross.build_sat picross in
+		if n < 3 || Sys.argv.(2) = "solve" then begin
+			if not (solve phi) then
+				printf "Pas de solution\n"
+			else
+				Picross.debug_grid (Picross.extract_grid phi)
+		end else
+			printf "%s" (Cnf.make_dimacs phi)
 	| _ -> printf "Pas compris\n"
 

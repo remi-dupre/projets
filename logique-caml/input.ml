@@ -17,7 +17,7 @@ let rec get_dimacs_type () =
 			end
 		| t::kind::q when t = "p" && kind = "picross" ->
 			begin match q with
-				| nb_col::nb_lin::_ -> Printf.printf "dan \n";Picross(int_of_string nb_col, int_of_string nb_lin)
+				| nb_col::nb_lin::_ -> Picross(int_of_string nb_col, int_of_string nb_lin)
 				| _ -> failwith "error with cnf file"
 			end
 		| _ -> failwith "unknown dimacs type"
