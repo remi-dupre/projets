@@ -88,13 +88,24 @@ in
 let _ = (make_dimacs (Picross.build_sat grille)) in printf "%!"
 *)*);;
 
-if (Array.length (Sys.argv)) >= 2 then begin
-	let phi = Input.dimacs() in
-	let res = match Sys.argv.(1) with
-		| "random" -> Dpll.var_selection := RANDOM ; solve phi
-		| "max-pres" -> Dpll.var_selection := MAX_PRES ; solve phi
-		| "up" -> Dpll.var_selection := MAX_UP ; solve phi
-		| _ -> failwith "unknown argument"
-	in if res then printf "SAT\n" else printf "UNSAT\n"
-end
+let n = Array.length (Sys.argv) in
+if n = 1 then begin
+	printf "-> satsol solve [méthode]\n";
+	printf "  résoud une instance de sat donnée sur l'entrée standart\n";
+	printf "  méthode : random, max-pres, up (defaut : max-pres)\n"
+end else match Sys.argv.(1) with
+	| "solve" -> begin
+		let phi = Input.dimacs() in
+		let res =
+			if n <= 1 then
+				solve phi		
+			else match Sys.argv.(2) with
+				| "random" -> Dpll.var_selection := RANDOM ; solve phi
+				| "max-pres" -> Dpll.var_selection := MAX_PRES ; solve phi
+				| "up" -> Dpll.var_selection := MAX_UP ; solve phi
+				| _ -> failwith "unknown argument"
+		in if res then printf "SAT\n" else printf "UNSAT\n"
+		end
+	| "picross" -> printf "picross solver :"
+	| _ -> printf "Pas compris\n"
 
