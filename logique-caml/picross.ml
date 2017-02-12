@@ -1,5 +1,6 @@
 open Printf
 open Cnf
+open Tools
 
 type t = int array array * int array array
 
@@ -10,7 +11,7 @@ let build_sat pb =
 	let grille = Array.make_matrix (nc+2) (nl+2) (make_var "vide") in
 	for i = 0 to nc+1 do
 		for j = 0 to nl+1 do
-			grille.(i).(j) <- make_var (sprintf "g[%d,%d]" (i-1) (j-1))
+			grille.(i).(j) <- make_var (sprintf "g %d %d" (i-1) (j-1))
 		done;
 	done;
 
@@ -92,15 +93,49 @@ let build_sat pb =
 			clauses := (Clause(!starts_need)) :: (!clauses)
 		done
 	done;
+	(CNF(!clauses))
 
-(*	let _ = Dpll.solve (CNF(!clauses)) in
-	for j = 1 to nl do
-		for i = 1 to nc do
-			match grille.(i).(j).value with
-			| Trilean.T -> printf "#"
-			| Trilean.F -> printf " "
-			| Trilean.U -> printf "O"
+let extract_grid phi =
+	let vars = get_vars phi in
+	let nb_l, nb_c =
+		let max_x, max_y = ref (-1), ref (-1) in
+		List.iter (fun v ->
+			let args = split v.name in
+			if List.hd args = "g" then begin
+				max_x := max (!max_x) (abs (int_of_string (List.nth args 2)));
+				max_y := max (!max_y) (abs (int_of_string (List.nth args 1)))
+			end
+		) vars;
+		(!max_x, !max_y)
+	in
+	let grid = Array.make_matrix nb_c nb_l false in
+	List.iter (fun v ->
+		let args = split v.name in
+		if List.hd args = "g" then
+			let i = abs (int_of_string (List.nth args 1)) in
+			let j = abs (int_of_string (List.nth args 2)) in
+			if v.value = T then
+				grid.(i).(j) <- true
+	) vars;
+	grid
+
+let debug_grid mat =
+	let n = Array.length mat in
+	let m = Array.length mat.(0) in
+
+	printf "  ";
+	for i = 1 to n do printf "_" done;
+	printf " \n";
+
+	for j = 0 to m-1 do
+		printf " |";
+		for i = 0 to n-1 do
+			if mat.(i).(j) then printf "#" else printf " ";
 		done;
-		printf "\n";
+		printf "|\n"
 	done;
-*)	(CNF(!clauses))
+
+	printf "  ";
+	for i = 1 to n do printf "‾" done;
+	printf " \n"
+
