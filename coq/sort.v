@@ -58,37 +58,75 @@ Proof.
     Restart.
 
     intros b x l Hneq.
+    assert ((b =? x) = false) as Hneq2.
+    pose proof PeanoNat.Nat.eqb_neq b x.
+    apply H.
+    assumption.
     induction l.
 
     (* Initialisation *)
-    simpl.
+    (*)simpl.
     replace (b =? x) with false.
     reflexivity.
     pose proof PeanoNat.Nat.eqb_neq b x.
     symmetry.
     apply H.
-    assumption.
+    assumption.*)
+    simpl.
+    replace (b =? x) with false.
+    reflexivity.
 
     (* Induction *)
     simpl.
     compare (a <? b) true.
-    intro Hin. (* a < b *)
+
+    (* a < b *)
+    intro Hin.
     replace (a <? b) with true.
     simpl.
     compare (a =? x) true.
+
     intro Heq. (* a = x *)
     replace (a =? x) with true.
     pose proof eq_S (count x (insert b l)) (count x l).
     apply H.
     assumption.
+
     intro Heq. (* a <> x *)
-Search (S _ = S _).
+    assert ((a =? x) = false).
+    pose proof Bool.not_true_is_false (a =? x).
+    apply H.
+    assumption.
+    replace (a =? x) with false.
+    assumption.
 
+    (* a >= b *)
+    intro Hnin.
+    assert ((a <? b) = false) as Hin.
+    pose proof Bool.not_true_is_false.
+    apply H.
+    assumption.
+    replace (a <? b) with false.
+    compare (a =? x) true.
 
+    intro Heq. (* a = x *)
+    replace (a =? x) with true.
+    simpl.
+    replace (b =? x) with false.
+    replace (a =? x) with true.
+    reflexivity.
 
-    admit.
-    Search (_::_).
-Admitted.
+    intro Heq. (* a <> x *)
+    simpl.
+    replace (a =? x) with false.
+    replace (b =? x) with false.
+    reflexivity.
+    pose proof Bool.not_true_is_false.
+    symmetry.
+    apply H.
+    assumption.
+Qed.
+
 
 Lemma augm_ins : forall (x : nat) (l : list nat), count x (insert x l) = S (count x l).
 Proof.
@@ -203,6 +241,48 @@ Proof.
     apply Hneq.
     assumption.
 simpl.
+
+(** Maintenant on va prouver que la liste reste triée *)
+
+Search (nth _ (_::_) _).
+Search (In _).
+Lemma nth_mon : forall (n t : nat) (q : list nat), nth n q 0 = nth (S n) (t::q) 0.
+Proof.
+    intros.
+    simpl.
+    reflexivity.
+Qed.
+
+Search (nth _ _ _).
+
+Lemma sort_makes_sorted : forall (l : list nat), is_sorted (sort l).
+Proof.
+    intro l.
+    unfold is_sorted.
+    induction l.
+
+    (* initialisation *)
+    intros.
+    replace (sort nil) with (nil : list nat).
+    simpl.
+    destruct x.
+    destruct y.
+    easy.
+    easy.
+    easy.
+    easy.
+
+    (* induction *)
+    intros.
+    destruct x.
+    simpl.
+
+
+
+
+
+
+pose proof nth_overflow (nil : list nat) x dd<F3><F3>.
 
 Theorem sort_correct : forall (l : list nat), is_sorted (sort l) /\ same_elements l (sort l).
 
