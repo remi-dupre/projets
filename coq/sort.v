@@ -41,21 +41,53 @@ Definition permuted (l1 : list nat) (l2 : list nat) : Prop :=
 
 Lemma stag_ins : forall (x a :nat) (l : list nat), (x <> a) -> count a (insert x l) = count a l.
 Proof.
-    intros x a l Heq.
+    intros b x l Heq.
+    destruct l.
+
+    (* Liste vide *)
+    simpl.
+    replace (b =? x) with false.
+    reflexivity.
+    pose proof PeanoNat.Nat.eqb_neq b x.
+    symmetry.
+    apply H.
+    assumption.
+
+    (* n::l *)
+    simpl.
+    Restart.
+
+    intros b x l Hneq.
     induction l.
 
     (* Initialisation *)
     simpl.
-    replace (x =? a) with false.
+    replace (b =? x) with false.
     reflexivity.
-    pose proof PeanoNat.Nat.eqb_neq x a.
+    pose proof PeanoNat.Nat.eqb_neq b x.
     symmetry.
     apply H.
     assumption.
 
     (* Induction *)
     simpl.
+    compare (a <? b) true.
+    intro Hin. (* a < b *)
+    replace (a <? b) with true.
+    simpl.
+    compare (a =? x) true.
+    intro Heq. (* a = x *)
+    replace (a =? x) with true.
+    pose proof eq_S (count x (insert b l)) (count x l).
+    apply H.
+    assumption.
+    intro Heq. (* a <> x *)
+Search (S _ = S _).
+
+
+
     admit.
+    Search (_::_).
 Admitted.
 
 Lemma augm_ins : forall (x : nat) (l : list nat), count x (insert x l) = S (count x l).
