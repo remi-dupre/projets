@@ -30,6 +30,23 @@ Fixpoint count (x : nat) (l : list nat) : nat :=
             count x q
     end.
 
+Fixpoint lmin (l : list nat) : nat :=
+    match l with
+    | nil => 0
+    | t::q => if (t <? lmin q) then t else lmin q
+    end.
+
+Inductive is_sorted3 : list nat -> Prop :=
+| is_sorted_nil : is_sorted3 nil
+| is_sorted_ind : forall t q, t <= lmin q /\ is_sorted3 q -> is_sorted3 (t::q)
+.
+
+Inductive is_sorted2 : list nat -> Prop :=
+| is_sorted_nil : is_sorted2 nil
+| is_sorted_sin : forall n, is_sorted2 (n::nil)
+| is_sorted_ind : forall n m q, n <= m /\ is_sorted2 (m::q) -> is_sorted2 (n::m::q)
+.
+
 Definition is_sorted (l : list nat) : Prop :=
     forall x y, x < y
         -> y < length l
@@ -244,8 +261,6 @@ simpl.
 
 (** Maintenant on va prouver que la liste reste triée *)
 
-Search (nth _ (_::_) _).
-Search (In _).
 Lemma nth_mon : forall (n t : nat) (q : list nat), nth n q 0 = nth (S n) (t::q) 0.
 Proof.
     intros.
@@ -253,7 +268,100 @@ Proof.
     reflexivity.
 Qed.
 
-Search (nth _ _ _).
+
+Lemma min_correct : forall t q, lmin (t::q) <= t /\ lmin (t::q) <= lmin q.
+Proof.
+    intros.
+    split.
+    simpl.
+    compare (t <? lmin q) true.
+    intro.
+    replace (t <? lmin q) with true.
+    reflexivity.
+    intro.
+    assert ((t <? lmin q) = false).
+    destruct (t <? lmin q).
+    easy.
+    easy.
+    replace (t <? lmin q) with false.
+    pose proof PeanoNat.Nat.ltb_ge t (lmin q).
+    apply H0.
+    assumption.
+    
+    simpl.
+    destruct (t <? lmin q) eqn : H.
+    pose proof PeanoNat.Nat.ltb_lt t (lmin q).
+    apply H0.
+    assert (t < lmin q).
+    apply H0.
+    assumption.
+    pose proof PeanoNat.Nat.lt_le_incl.
+    apply H2.
+    assumption.
+    reflexivity.
+Qed.
+
+Lemma ins_gets_min : forall t q a, t < a /\ t < lmin q -> t = lmin (insert a (t::q)).
+Proof.
+    intros.
+    induction q.
+    assert ((t <? a) = true).
+    pose proof PeanoNat.Nat.ltb_lt t a.
+    apply H0.
+    easy.
+    simpl.
+    replace (t <? a) with true.
+    simpl.
+    easy.
+
+    simpl.
+    assert ((t <? a) = true).
+    pose proof PeanoNat.Nat.ltb_lt t a.
+    apply H0.
+    easy.
+    replace (t <? a) with true.
+    replace (if a0 <? a then a0 :: insert a q else a :: a0 :: q) with (insert a (a0::q)).
+
+    fold (t::(insert a (a0::q))).
+
+    destruct (a0 <? a) eqn : G.
+    simpl.
+
+
+
+
+    simpl.
+    assert ((t <? lmin (insert a q)) = true).
+    admit.
+    destruct (t <? a) eqn : G.
+    replace (t <? lmin (insert a q)) with true.
+    reflexivity.
+    replace (t <? lmin (insert a q)) with true.
+    reflexivity.
+
+
+    
+Lemma sort_gets_min : forall l t q, sort l = t::q -> t = lmin l.
+Proof.
+    induction l.
+    intros.
+    easy.
+    intros.
+    simpl.
+    compare (a <? lmin l) true.
+    intro.
+    replace (a <? lmin l) with true.
+    assert (sort (a :: l) = t::q).
+    simpl.
+
+
+
+Theorem sort_makes_sorted2 : forall (l : list nat), is_sorted2 (sort l).
+Proof.
+    intros.
+    induction l.
+    constructor.
+
 
 Lemma sort_makes_sorted : forall (l : list nat), is_sorted (sort l).
 Proof.
@@ -276,13 +384,6 @@ Proof.
     intros.
     destruct x.
     simpl.
-
-
-
-
-
-
-pose proof nth_overflow (nil : list nat) x dd<F3><F3>.
 
 Theorem sort_correct : forall (l : list nat), is_sorted (sort l) /\ same_elements l (sort l).
 
