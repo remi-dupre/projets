@@ -322,22 +322,21 @@ Proof.
     replace (t <? a) with true.
     replace (if a0 <? a then a0 :: insert a q else a :: a0 :: q) with (insert a (a0::q)).
 
-    fold (t::(insert a (a0::q))).
 
-    destruct (a0 <? a) eqn : G.
+
+    Restart.
+
+    intros.
     simpl.
-
-
-
-
+    replace (t <? a) with true.
     simpl.
-    assert ((t <? lmin (insert a q)) = true).
-    admit.
-    destruct (t <? a) eqn : G.
     replace (t <? lmin (insert a q)) with true.
     reflexivity.
-    replace (t <? lmin (insert a q)) with true.
-    reflexivity.
+    assert (t < lmin (insert a q)).
+
+
+
+
 
 
     
