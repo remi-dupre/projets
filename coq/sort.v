@@ -301,31 +301,84 @@ Proof.
     reflexivity.
 Qed.
 
-Lemma ins_gets_min : forall t q a, t < a /\ t < lmin q -> t = lmin (insert a (t::q)).
+Lemma stab_ins : forall q t x, x < t /\ x < lmin q -> x < lmin (insert t q).
 Proof.
-    intros.
     induction q.
-    assert ((t <? a) = true).
-    pose proof PeanoNat.Nat.ltb_lt t a.
+    intros.
+    easy.
+    intros.
+    simpl.
+    destruct (a <? t) eqn : G.
+    simpl.
+    destruct (a <? lmin (insert t q)) eqn : F.
+    pose proof min_correct a q.
+    pose proof Gt.le_gt_trans a (lmin (a::q)) x.
+    apply H1.
     apply H0.
-    easy.
-    simpl.
-    replace (t <? a) with true.
-    simpl.
-    easy.
-
-    simpl.
-    assert ((t <? a) = true).
-    pose proof PeanoNat.Nat.ltb_lt t a.
+    apply H.
+    apply IHq.
+    split.
+    apply H.
+    pose proof min_correct a q.
+    pose proof Gt.le_gt_trans (lmin q) (lmin (a::q)) x.
+    apply H1.
     apply H0.
+    apply H.
+    simpl.
+    destruct (a <? lmin q).
+    destruct (t <? a) eqn : F.
+    apply H.
+    assert (a <= t).
+    assert ((a <=? t) = true).
+    pose proof PeanoNat.Nat.ltb_antisym a t.
+    replace (a <=? t) with (negb (t <? a)).
+    replace (t <? a) with false.
     easy.
-    replace (t <? a) with true.
-    replace (if a0 <? a then a0 :: insert a q else a :: a0 :: q) with (insert a (a0::q)).
+    destruct (t <? a).
+    simpl.
+    easy.
+    simpl.
+    replace true with (negb false).
+    replace false with (negb (a <=? t)).
+    pose proof Bool.negb_involutive (a <=? t).
+    apply H1.
+    easy.
+    pose proof PeanoNat.Nat.leb_le a t.
+    apply H1.
+    assumption.
+    assert (a = t).
+    assert ((a <= t) /\ (a >= t)).
+    split.
+    pose proof PeanoNat.Nat.leb_le a t.
+    apply H1.
+    pose proof PeanoNat.Nat.leb_antisym t a.
+    replace (a <=? t) with (negb (t <? a)).
+    replace (t <? a) with false.
+    easy.
+    pose proof PeanoNat.Nat.leb_le t a.
+    apply H1.
+    pose proof PeanoNat.Nat.leb_antisym a t.
+    replace (t <=? a) with (negb (a <? t)).
+    replace (a <? t) with false.
+    easy.
+    pose proof PeanoNat.Nat.le_antisymm a t.
+    apply H2.
+    apply H1.
+    apply H1.
+    replace a with t.
+    apply H.
+    destruct (t <? lmin q).
+    apply H.
+    pose proof min_correct a q.
+    pose proof Gt.le_gt_trans (lmin q) (lmin (a::q)) x.
+    apply H1.
+    apply H0.
+    apply H.
+Qed.
 
 
-
-    Restart.
-
+Lemma ins_gets_min_1 : forall t q a, t < a /\ t < lmin q -> t = lmin (insert a (t::q)).
+Proof.
     intros.
     simpl.
     replace (t <? a) with true.
@@ -333,25 +386,91 @@ Proof.
     replace (t <? lmin (insert a q)) with true.
     reflexivity.
     assert (t < lmin (insert a q)).
+    pose proof stab_ins q a t.
+    apply H0.
+    assumption.
+    pose proof PeanoNat.Nat.ltb_lt t (lmin (insert a q)).
+    symmetry.
+    apply H1.
+    assumption.
+    pose proof PeanoNat.Nat.ltb_lt t a.
+    symmetry.
+    apply H0.
+    apply H.
+Qed.
+
+Lemma ins_gets_min_2 : forall l a, a < lmin l -> a = lmin (insert a l).
+Proof.
+    intros.
+    induction l.
+    assert (a < 0).
+    replace 0 with (lmin nil).
+    assumption.
+    reflexivity.
+    easy.
+
+    simpl.
+    destruct (a0 <? a) eqn : G.
+    simpl.
+    destruct (a0 <? lmin (insert a l)) eqn : F.
+    pose proof min_correct a0 l.
+    assert (a < a0).
+    pose proof Gt.le_gt_trans a0 (lmin (a0::l)) a.
+    apply H1.
+    apply H0.
+    apply H.
+    assert (a0 < a).
+    pose proof PeanoNat.Nat.ltb_lt a0 a.
+    apply H2.
+    assumption.
+    assert (a < a).
+    pose proof Gt.gt_trans a a0 a.
+    apply H3.
+    apply H2.
+    apply H1.
+    pose proof PeanoNat.Nat.lt_irrefl a.
+    easy.
+    assert (a0 < a).
+    pose proof PeanoNat.Nat.ltb_lt a0 a.
+    apply H0.
+    assumption.
+    assert (a < a0).
+    pose proof min_correct a0 l.
+    pose proof Gt.le_gt_trans a0 (lmin (a0::l)) a.
+    apply H2.
+    apply H1.
+    assumption.
+    assert (a < a).
+    pose proof Gt.gt_trans a a0 a.
+    apply H2.
+    apply H0.
+    apply H1.
+    pose proof PeanoNat.Nat.lt_irrefl a.
+    easy.
+    replace (lmin (a::a0::l)) with (if a <? (lmin (a0::l)) then a else lmin (a0::l)).
+    replace (a <? (lmin (a0::l))) with true.
+    reflexivity.
+    pose proof PeanoNat.Nat.ltb_lt a (lmin (a0::l)).
+    symmetry.
+    apply H0.
+    assumption.
+    reflexivity.
+Qed.
 
 
 
-
-
-
-    
-Lemma sort_gets_min : forall l t q, sort l = t::q -> t = lmin l.
+Lemma sort_gets_min : forall l t q, sort l = t::q -> t = lmin (sort l).
 Proof.
     induction l.
     intros.
     easy.
     intros.
     simpl.
-    compare (a <? lmin l) true.
-    intro.
-    replace (a <? lmin l) with true.
-    assert (sort (a :: l) = t::q).
-    simpl.
+
+    simpl in H.
+    assert (t <= lmin )
+    
+
 
 
 
