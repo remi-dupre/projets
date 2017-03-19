@@ -457,8 +457,6 @@ Proof.
     reflexivity.
 Qed.
 
-
-
 Lemma sort_gets_min : forall l t q, sort l = t::q -> t = lmin (sort l).
 Proof.
     induction l.
@@ -467,6 +465,33 @@ Proof.
     intros.
     simpl.
 
+    destruct (a <? lmin (sort l)) eqn : Cmp.
+    assert (a < lmin (sort l)).
+    admit.
+    destruct (sort l) eqn : G.
+    simpl.
+    admit. (* a < 0 *)
+    simpl.
+    assert (a < n). (* transitivité *)
+    admit.
+    assert ((n <? a) = false).
+    admit.
+    replace (n <? a) with false.
+    replace (lmin (a::n::l0)) with (if a <? lmin (n::l0) then a else lmin (n::l0)).
+    replace (a <? lmin (n::l0)) with true.
+
+
+
+
+
+    pose proof ins_gets_min_2 (sort l) a. 
+    replace (lmin (insert a (sort l))) with a.
+    replace t with (lmin (sort l)).
+    apply IHl.
+
+
+    destruct (a < lmin (sort l)) eqn : G.
+    
     simpl in H.
     assert (t <= lmin )
     
