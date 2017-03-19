@@ -22,8 +22,10 @@
 
 %token EQUALS
 %token ANY
+%token MINUS
 
 %token LPAR RPAR
+
 
 %left OR
 %left AND
@@ -31,6 +33,7 @@
 %left BIN_CMP
 %left EQUALS
 %left BIN_PLUS
+%left MINUS
 %left BIN_MULT
 
 %nonassoc CASE OF /* checker */
@@ -66,13 +69,15 @@ expr:
   | VAR                            { Var $1 }
   | STRING                         { String $1 }
   | LPAR expr RPAR                 { $2 }
-  | LET VAR EQUALS expr IN expr    { Let ($2,$4,$6) }
+  | LET VAR EQUALS expr IN expr    { Let ($2, $4, $6) }
   | ANY                            { Var "_" }
   | expr EQUALS expr               { App ("=", [$1;$3])}
-  | expr BIN_PLUS expr             { App ($2,[$1;$3]) }
-  | expr BIN_MULT expr             { App ($2,[$1;$3]) }
-  | expr BIN_CMP expr              { App ($2,[$1;$3]) }
-  | expr AND expr                  { App ("and",[$1;$3]) }
-  | expr OR expr                   { App ("or",[$1;$3]) }
-  | NOT expr                       { App ("not",[$2]) }
+  | expr BIN_PLUS expr             { App ($2, [$1; $3]) }
+  | expr MINUS expr                { App ("-", [$1; $3]) }
+  | MINUS expr                     { App ("-", [Int 0; $2]) }
+  | expr BIN_MULT expr             { App ($2, [$1; $3]) }
+  | expr BIN_CMP expr              { App ($2, [$1; $3]) }
+  | expr AND expr                  { App ("and", [$1; $3]) }
+  | expr OR expr                   { App ("or", [$1; $3]) }
+  | NOT expr                       { App ("not", [$2]) }
 
