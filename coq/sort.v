@@ -82,13 +82,6 @@ Proof.
     induction l.
 
     (* Initialisation *)
-    (*)simpl.
-    replace (b =? x) with false.
-    reflexivity.
-    pose proof PeanoNat.Nat.eqb_neq b x.
-    symmetry.
-    apply H.
-    assumption.*)
     simpl.
     replace (b =? x) with false.
     reflexivity.
