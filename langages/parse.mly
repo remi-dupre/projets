@@ -25,7 +25,7 @@
 %token MINUS
 
 %token LPAR RPAR
-
+%token LCOM RCOM
 
 %left OR
 %left AND
@@ -51,19 +51,56 @@
 terminated_expr:
   | expr EOF { $1 }
 
+/* Commentaires */
+
+comment :
+  | LCOM com_content RCOM          {()}
+  | LCOM RCOM                      {()}
+
+com_content :
+  | com_content com_content        {()}
+  | comment                        {()} 
+/* on ignore les mots dans le commentaire */
+  | AND                            {()}
+  | OR                             {()}
+  | NOT                            {()}
+  | LET                            {()}
+  | EQUALS                         {()}
+  | IN                             {()}
+  | CASE                           {()}
+  | OF                             {()}
+  | ARROW                          {()}
+  | PIPE                           {()}
+  | ANY                            {()}
+  | MINUS                          {()}
+  | VAR                            {()}
+  | INT                            {()}
+  | STRING                         {()}
+  | LPAR                           {()}
+  | RPAR                           {()}
+  | BIN_CMP                        {()}
+  | BIN_PLUS                       {()}
+  | BIN_MULT                       {()}
+
+/* Matching */
+
 pmatch :
   | prule                          { [$1] }
   | pmatch PIPE prule              { $3::$1 }
 
 prule :
-  | pat ARROW expr                { ($1, $3) }
+  | pat ARROW expr                 { ($1, $3) }
 
 pat :
   | STRING                         { String $1 }
   | INT                            { Int $1 }
   | ANY                            { Any }
 
+/* Expressions */
+
 expr:
+  | expr comment                   { $1 }
+  | comment expr                   { $2 }
   | CASE expr OF pmatch            { Case ($2, List.rev $4) }
   | INT                            { Int $1 }
   | VAR                            { Var $1 }

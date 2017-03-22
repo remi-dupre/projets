@@ -38,6 +38,9 @@ rule token = parse
   | "("                 { LPAR }
   | ")"                 { RPAR }
 
+  | "(*"                { LCOM }
+  | "*)"                { RCOM }
+
   | opcomp as s         { BIN_CMP s }
   | opadd as s          { BIN_PLUS s }
   | opsub as s          { BIN_MULT s }
