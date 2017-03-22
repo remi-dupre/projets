@@ -45,7 +45,9 @@ rule token = parse
   | opadd as s          { BIN_PLUS s }
   | opsub as s          { BIN_MULT s }
 
-
   | [' ' '\t' '\r' '\n']+   { token lexbuf }
 
-  | eof                { EOF }
+  | eof                 { EOF }
+
+  | _                   { OTHER }
+

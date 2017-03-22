@@ -27,6 +27,8 @@
 %token LPAR RPAR
 %token LCOM RCOM
 
+%token OTHER
+
 %left OR
 %left AND
 %left NOT
@@ -37,9 +39,9 @@
 %left BIN_MULT
 %left LCOM RCOM
 
-%nonassoc CASE OF /* checker */
-%nonassoc PIPE ARROW /* checker */
-%nonassoc LET EQUALS IN /* checker */
+%nonassoc CASE OF
+%nonassoc PIPE ARROW
+%nonassoc LET EQUALS IN
 
 /* Les non-terminaux par lesquels l'analyse peut commencer,
  * et la donnée de leurs types. */
@@ -64,7 +66,7 @@ com_content :
   | comment                        {()} 
 
 com_end :
-/* on ignore les mots dans le commentaire */
+  /* on ignore les mots dans le commentaire */
   | AND                            {()}
   | OR                             {()}
   | NOT                            {()}
@@ -85,6 +87,7 @@ com_end :
   | BIN_CMP                        {()}
   | BIN_PLUS                       {()}
   | BIN_MULT                       {()}
+  | OTHER                          {()}
 
 /* Matching */
 
@@ -114,7 +117,7 @@ expr:
   | expr EQUALS expr               { App ("=", [$1;$3])}
   | expr BIN_PLUS expr             { App ($2, [$1; $3]) }
   | expr MINUS expr                { App ("-", [$1; $3]) }
-  | MINUS expr                     { App ("-", [Int 0; $2]) }
+  | MINUS expr                     { App ("-", [$2]) }
   | expr BIN_MULT expr             { App ($2, [$1; $3]) }
   | expr BIN_CMP expr              { App ($2, [$1; $3]) }
   | expr AND expr                  { App ("and", [$1; $3]) }
