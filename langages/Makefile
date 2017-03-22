@@ -25,8 +25,9 @@ $(NAME): expr.cmo lex.cmo parse.cmo main.cmo
 
 clean:
 	rm -f lex.ml lex.mli parse.ml parse.mli
-	rm -f *.cmo $(NAME)
-	rm -f .depend
+	rm -f *.cmo
+	rm -f *.cmi
+	rm -f $(NAME) .depend
 	rm parse.output
 
 tarball:
