@@ -39,6 +39,7 @@
 %nonassoc CASE OF /* checker */
 %nonassoc PIPE ARROW /* checker */
 %nonassoc LET EQUALS IN /* checker */
+%nonassoc LCOM RCOM
 
 /* Les non-terminaux par lesquels l'analyse peut commencer,
  * et la donnée de leurs types. */
@@ -58,8 +59,10 @@ comment :
   | LCOM RCOM                      {()}
 
 com_content :
-  | com_content com_content        {()}
+  | com_content com_end            {()}
   | comment                        {()} 
+
+com_end :
 /* on ignore les mots dans le commentaire */
   | AND                            {()}
   | OR                             {()}
