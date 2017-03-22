@@ -35,11 +35,11 @@
 %left BIN_PLUS
 %left MINUS
 %left BIN_MULT
+%left LCOM RCOM
 
 %nonassoc CASE OF /* checker */
 %nonassoc PIPE ARROW /* checker */
 %nonassoc LET EQUALS IN /* checker */
-%nonassoc LCOM RCOM
 
 /* Les non-terminaux par lesquels l'analyse peut commencer,
  * et la donnée de leurs types. */
@@ -60,6 +60,7 @@ comment :
 
 com_content :
   | com_content com_end            {()}
+  | com_end                        {()}
   | comment                        {()} 
 
 com_end :
@@ -103,7 +104,6 @@ pat :
 
 expr:
   | expr comment                   { $1 }
-  | comment expr                   { $2 }
   | CASE expr OF pmatch            { Case ($2, List.rev $4) }
   | INT                            { Int $1 }
   | VAR                            { Var $1 }
