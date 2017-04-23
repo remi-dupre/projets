@@ -39,23 +39,27 @@ def test_gaussian_ci_nu(n = 100, alpha = 0.05) :
         
     print(str(bons) + " bons contre " + str(mauvais) + " mauvais")
 
-# ----- Question 2.3 -----
+# ----- Question 2.2 -----
 
 def chi2_noncentral_df1_ci_lambda(samples_y, alpha):
-    samples_x = [ np.sqrt(y) for y in samples_y ]
-    r_x = gaussian_ci_nu(samples_x, alpha)
-    return [ r[0]**2, r[1]**2 ]
+    # On refait à peu près la même chose sur les sqrt(y_i)
+    # Le résultat est plus grossier au voisinage de 0 (à cause de l'inégalité triangulaire)
+    n = len(samples_y)
+    a = quartile_N0(1 - alpha)
+    x = np.mean([ np.sqrt(y) for y in samples_y ])
+    d = a / np.sqrt(n)
+    return [0, (x+d)**2]
     
-def test_chi2_noncentral_df1_ci_lambda(n = 100, alpha = 0.05) :
+def test_chi2_noncentral_df1_ci_lambda(n = 100, cent = 0.5, alpha = 0.05) :
     # Cherche 1000 fois l'intervale de confiance pour des nouvelles valeures des x_1 ... x_n
-    # On compte le nombre de fois où mu est dedans
-    N = norm(np.sqrt(42), 1)
+    # On compte le nombre de fois où lambda est dedans
+    N = norm(-np.sqrt(cent), 1) # lambda = cent
     
     bons = mauvais = 0
     for i in range(1000) :
-        samples_x = np.square(N.rvs(n))
-        r = chi2_noncentral_df1_ci_lambda(samples_x, alpha)
-        if 42 < r[0] or 42 > r[1] :
+        samples_y = np.square(N.rvs(n))
+        r = chi2_noncentral_df1_ci_lambda(samples_y, alpha)
+        if cent < r[0] or cent > r[1] :
             mauvais += 1
         else :
             bons += 1
