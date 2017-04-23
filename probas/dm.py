@@ -66,12 +66,22 @@ def test_chi2_noncentral_df1_ci_lambda(n = 100, cent = 0.5, alpha = 0.05) :
         
     print(str(bons) + " bons contre " + str(mauvais) + " mauvais")
 
+# ----- Question 2.4 -----
+
 def chi2_noncentral_dfp_ci_lambda(sample_z, p, alpha):
     return [-1, -1] #TODO
 
 
+# ----- Question 3.3 -----
+
 def rejection_sampling(f, g, g_sampler, c, n):
-    return [] #TODO
+    ret = [] # Les valeurs correspondant à notre tirage aléatoire
+    while len(ret) < n :
+        x = g_sampler()
+        u = uniform(0, 1).rvs()
+        if u <= f(x) / (c*g(x)) :
+            ret.push_back(x)
+    return ret
 
 def truncated_gaussian_sampling(mu, sigma, n, a):
     return [] #TODO
