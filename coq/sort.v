@@ -207,13 +207,10 @@ Proof.
     induction l.
     
     (* Initialisation *)
-    unfold permuted.
     simpl.
     reflexivity.
 
     (* Induction *)
-    unfold permuted.
-    unfold permuted in IHl.
     simpl.
     compare x a.
 
@@ -248,9 +245,11 @@ Proof.
     pose proof stag_ins a x (sort l).
     replace (count x l) with (count x (sort l)).
     symmetry.
-    apply Hneq.
+    apply H0.
+    pose proof PeanoNat.Nat.neq_sym x a.
+    apply H1.
     assumption.
-simpl.
+Qed.
 
 (** Maintenant on va prouver que la liste reste triée *)
 
