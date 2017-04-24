@@ -5,12 +5,15 @@ from scipy.stats import *
 
 author = "Rémi Dupré"
 
-def quartile_N0(alpha, m = 10**4) :
-    # Approxime le quantile associé à la proba alpha pour la distribution N(0, 1)
-    N = norm(0, 1)
-    tirage = N.rvs(m) # m défini une précision
-    return mstats.mquantiles(tirage, [alpha])[0]
-    
+# def quartile_N0(alpha, m = 10**4) :
+#     # Approxime le quantile associé à la proba alpha pour la distribution N(0, 1)
+#     N = norm(0, 1)
+#     tirage = N.rvs(m) # m défini une précision
+#     return mstats.mquantiles(tirage, [alpha])[0]
+
+# J'ai volontairement lu votre mail après avoir commencé le DM
+# Du coup je n'avait pas vu que c'était déjà implémenté
+quartile_N0 = norm.ppf
 
 # ----- Question 2.1 -----
 
