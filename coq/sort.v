@@ -42,9 +42,9 @@ Inductive is_sorted3 : list nat -> Prop :=
 .
 
 Inductive is_sorted2 : list nat -> Prop :=
-| is_sorted_nil : is_sorted2 nil
-| is_sorted_sin : forall n, is_sorted2 (n::nil)
-| is_sorted_ind : forall n m q, n <= m /\ is_sorted2 (m::q) -> is_sorted2 (n::m::q)
+| is_sorted_nil2 : is_sorted2 nil
+| is_sorted_sin2 : forall n, is_sorted2 (n::nil)
+| is_sorted_ind2 : forall n m q, n <= m /\ is_sorted2 (m::q) -> is_sorted2 (n::m::q)
 .
 
 Definition is_sorted (l : list nat) : Prop :=
