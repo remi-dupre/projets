@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from numpy.random import rand
 #from scipy.stats import norm, chi2
 from scipy.stats import *
@@ -74,6 +75,32 @@ def test_chi2_noncentral_df1_ci_lambda(n = 100, cent = 0.5, alpha = 0.05) :
 def chi2_noncentral_dfp_ci_lambda(sample_z, p, alpha):
     return [-1, -1] #TODO
 
+
+# ----- Question 3.2 -----
+
+def truncated_gaussian_pdf(mu, sigma, a) :
+    # Densité de la loi gaussienne tronquée
+    K = 1 / norm(mu, sigma).cdf(a)    
+    return lambda x : K * norm(mu, sigma).pdf(x) * (x <= a)
+
+def test_trucated_gaussian_pdf(mu = 42, sigma = 4.2, a = 53) :
+    # Trace la densité de la loi gaussienne tronquée, vérifie qu'elle est bien normalisée
+    f = truncated_gaussian_pdf(mu, sigma, a)
+    
+    from scipy import integrate
+    sum_all = integrate.quad(f, -float('inf'), float('inf'))
+    if abs(1 - sum_all[0]) <= sum_all[1] :
+        print('Correctement normée')
+    else :
+        print('Cette fonction est mal normalisée (de somme ' + str(sum_all[0]) + ')')
+    
+    g, d = mu - 5*sigma, mu + 5*sigma
+    vals_x = np.linspace(g, d, 1000)
+    vals_y = [ f(x) for x in vals_x ]
+    plt.plot(vals_x, vals_y)
+    plt.show()
+
+test_trucated_gaussian_pdf()
 
 # ----- Question 3.3 -----
 
